@@ -1,6 +1,8 @@
 package victorolaitan.timothyTwitterBot.util;
 
+import com.sun.org.apache.bcel.internal.generic.BREAKPOINT;
 import org.json.simple.JSONArray;
+import org.json.simple.JSONAware;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
@@ -22,28 +24,24 @@ public class JSONUtil {
             return new EasyJSON(filePath);
         }
 
-        JSONObject obj;
         JSONElement root;
 
         private EasyJSON() {
             root = new JSONElement(null, JSONElementType.ROOT, "", null);
-            obj = new JSONObject();
         }
 
         private EasyJSON(String filePath) throws IOException, ParseException {
             root = new JSONElement(null, JSONElementType.ROOT, "", null);
-            if (filePath.equals("")) {
-                obj = new JSONObject();
-            } else {
-                obj = (JSONObject) (new JSONParser()).parse(new FileReader(filePath));
+            if (!filePath.equals("")) {
+                JSONObject obj = (JSONObject) (new JSONParser()).parse(new FileReader(filePath));
                 for (Object key : obj.keySet()) {
                     if (!(key instanceof String)) {
                         throw new ParseException(ParseException.ERROR_UNEXPECTED_TOKEN, "EasyJSON can't handle non-string keys yet!");
                     }
                     Object value = obj.get(key);
-                    JSONElementType type = JSONElementType.UNKNOWN;
+                    JSONElementType type = JSONElementType.PRIMITIVE;
                     if (value instanceof String) {
-                        type = JSONElementType.STRING;
+                        type = JSONElementType.PRIMITIVE;
                     } else if (value instanceof JSONArray) {
                         type = JSONElementType.ARRAY;
                     } else if (value instanceof JSONObject) {
@@ -60,9 +58,9 @@ public class JSONUtil {
             if (targetItem.type == JSONElementType.ARRAY) {
                 JSONArray array = (JSONArray) targetItem.value;
                 for (Object arrayItem : array) {
-                    JSONElementType type = JSONElementType.UNKNOWN;
+                    JSONElementType type = JSONElementType.PRIMITIVE;
                     if (arrayItem instanceof String) {
-                        type = JSONElementType.STRING;
+                        type = JSONElementType.PRIMITIVE;
                     } else if (arrayItem instanceof JSONArray) {
                         type = JSONElementType.ARRAY;
                     } else if (arrayItem instanceof JSONObject) {
@@ -78,11 +76,9 @@ public class JSONUtil {
                     if (!(key instanceof String)) {
                         throw new ParseException(ParseException.ERROR_UNEXPECTED_TOKEN, "EasyJSON can't handle non-string keys yet!");
                     }
-                    Object value = obj.get(key);
-                    JSONElementType type = JSONElementType.UNKNOWN;
-                    if (value instanceof String) {
-                        type = JSONElementType.STRING;
-                    } else if (value instanceof JSONArray) {
+                    Object value = structure.get(key);
+                    JSONElementType type = JSONElementType.PRIMITIVE;
+                    if (value instanceof JSONArray) {
                         type = JSONElementType.ARRAY;
                     } else if (value instanceof JSONObject) {
                         type = JSONElementType.STRUCTURE;
@@ -95,10 +91,9 @@ public class JSONUtil {
         }
 
         private enum JSONElementType {
-            STRING,
+            PRIMITIVE,
             ARRAY,
             STRUCTURE,
-            UNKNOWN,
             ROOT
         }
 
@@ -117,7 +112,13 @@ public class JSONUtil {
             }
 
             public void put(String key, Object value) {
-                children.add(new JSONElement(root, JSONElementType.STRING, key, value));
+                if (value instanceof EasyJSON) {
+                    children.add(((EasyJSON) value).root);
+                } else if (value instanceof JSONElement) {
+                    children.add((JSONElement) value);
+                } else {
+                    children.add(new JSONElement(root, JSONElementType.PRIMITIVE, key, value));
+                }
             }
 
             public void putArray(String key, Object... items) {
@@ -151,6 +152,40 @@ public class JSONUtil {
                         return deepSearch(child, location, locPosition + 1);
                     }
                 }
+            }
+            return null;
+        }
+
+        public void save() {
+            //FIXME MAKE SAVE OPERATION WORK!
+            JSONObject obj = new JSONObject();
+            for (JSONElement element : root.children) {
+
+            }
+        }
+
+        private JSONAware deepSave(JSONObject obj, Object prevJSONRef, JSONElement currentElement) {
+            boolean isLeaf = currentElement.children.size() == 0;
+            if (prevJSONRef instanceof JSONObject) {
+                switch (currentElement.type) {
+                    case ARRAY:
+                        JSONArray array = new JSONArray();
+                        array.add(deepSave(obj, array, currentElement));
+                        obj.put(currentElement.key, array);
+                        return obj;
+                    case STRUCTURE:
+                        //return deepSave(obj, currentElement.value, );
+                    case ROOT:
+                        break;
+                    default:
+                        //obj.put(element.key, element.value);
+                }
+            } else if (prevJSONRef instanceof JSONArray) {
+                JSONArray array = (JSONArray) prevJSONRef;
+                for (JSONElement element : currentElement.children) {
+                    deepSave(obj, array, element);
+                }
+                array.add(currentElement.value);
             }
             return null;
         }
