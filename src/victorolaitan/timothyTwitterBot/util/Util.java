@@ -26,7 +26,7 @@ public class Util {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(Util.class.getResourceAsStream("data/" + name + ".txt")));
+            reader = new BufferedReader(new InputStreamReader(Util.class.getClassLoader().getResourceAsStream("victorolaitan/timothyTwitterBot/res/data/" + name + ".txt")));
             String line;
             while ((line = reader.readLine()) != null) {
                 lines.add(line);
@@ -74,7 +74,7 @@ public class Util {
         return null;
     }
 
-    public static ArrayList<String> bufferFromTextFile(String name) {
+    public static ArrayList<String> bufferTextFile(String name) {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = null;
         try {

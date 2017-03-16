@@ -2,6 +2,8 @@ package victorolaitan.timothyTwitterBot;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
+import victorolaitan.timothyTwitterBot.controller.DashboardController;
+import victorolaitan.timothyTwitterBot.trigger.Trigger;
 import victorolaitan.timothyTwitterBot.util.Util;
 import winterwell.jtwitter.OAuthSignpostClient;
 import winterwell.jtwitter.Twitter;
@@ -20,17 +22,34 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         instance = this;
-        ArrayList<String> acs = Util.bufferFromTextFile("acs");
+        ArrayList<String> acs = Util.bufferTextFile("acs");
         if (acs.isEmpty()) {
             Util.switchScene(primaryStage, "timothy");
         } else {
-            OAuthSignpostClient client = new OAuthSignpostClient(consumerKey, consumerSecret,
-                    acs.get(0), acs.get(1));
-            twitter = new Twitter(acs.get(2), client);
-            Util.switchScene(primaryStage, "dashboard");
+            initTimothy(acs, primaryStage);
         }
         currentStage = primaryStage;
         primaryStage.show();
+    }
+
+    public static void initTimothy(ArrayList<String> acs, Stage stage) {
+        try {
+            OAuthSignpostClient client = new OAuthSignpostClient(consumerKey, consumerSecret,
+                    acs.get(0), acs.get(1));
+            username = acs.get(2);
+            twitter = new Twitter(username, client);
+            DashboardController controller = Util.switchScene(stage, "dashboard");
+            controller.init();
+            Trigger.init();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Util.switchScene(stage, "no-internet");
+        }
+    }
+
+    @Override
+    public void stop() {
+        Trigger.saveTriggers();
     }
 
     public static void main(String[] args) {
@@ -66,6 +85,7 @@ public class Main extends Application {
         toSave[2] = username;
         Util.writeToTextFile("acs", false, toSave);
         twitter = new Twitter(username, oauthClient);
-        Util.switchScene(currentStage, "dashboard");
+        DashboardController controller = Util.switchScene(Main.currentStage, "dashboard");
+        controller.init();
     }
 }
