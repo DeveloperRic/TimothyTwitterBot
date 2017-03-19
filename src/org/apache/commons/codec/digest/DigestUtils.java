@@ -17,13 +17,13 @@
 
 package org.apache.commons.codec.digest;
 
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.codec.binary.StringUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-
-import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.codec.binary.StringUtils;
 
 /**
  * Operations to simplify common {@link java.security.MessageDigest} tasks.
@@ -41,7 +41,7 @@ public class DigestUtils {
      * @param digest
      *            The MessageDigest to use (e.g. MD5)
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return the digest
      * @throws IOException
      *             On error reading from the stream
@@ -177,7 +177,7 @@ public class DigestUtils {
      * Calculates the MD2 digest and returns the value as a 16 element <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD2 digest
      * @since 1.7
      */
@@ -189,7 +189,7 @@ public class DigestUtils {
      * Calculates the MD2 digest and returns the value as a 16 element <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD2 digest
      * @throws IOException
      *             On error reading from the stream
@@ -203,7 +203,7 @@ public class DigestUtils {
      * Calculates the MD2 digest and returns the value as a 16 element <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
+     *            TriggerListViewItemHandler to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
      * @return MD2 digest
      * @since 1.7
      */
@@ -215,7 +215,7 @@ public class DigestUtils {
      * Calculates the MD2 digest and returns the value as a 32 character hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD2 digest as a hex string
      * @since 1.7
      */
@@ -227,7 +227,7 @@ public class DigestUtils {
      * Calculates the MD2 digest and returns the value as a 32 character hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD2 digest as a hex string
      * @throws IOException
      *             On error reading from the stream
@@ -241,7 +241,7 @@ public class DigestUtils {
      * Calculates the MD2 digest and returns the value as a 32 character hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD2 digest as a hex string
      * @since 1.7
      */
@@ -253,7 +253,7 @@ public class DigestUtils {
      * Calculates the MD5 digest and returns the value as a 16 element <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD5 digest
      */
     public static byte[] md5(final byte[] data) {
@@ -264,7 +264,7 @@ public class DigestUtils {
      * Calculates the MD5 digest and returns the value as a 16 element <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD5 digest
      * @throws IOException
      *             On error reading from the stream
@@ -278,7 +278,7 @@ public class DigestUtils {
      * Calculates the MD5 digest and returns the value as a 16 element <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
+     *            TriggerListViewItemHandler to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
      * @return MD5 digest
      */
     public static byte[] md5(final String data) {
@@ -289,7 +289,7 @@ public class DigestUtils {
      * Calculates the MD5 digest and returns the value as a 32 character hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD5 digest as a hex string
      */
     public static String md5Hex(final byte[] data) {
@@ -300,7 +300,7 @@ public class DigestUtils {
      * Calculates the MD5 digest and returns the value as a 32 character hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD5 digest as a hex string
      * @throws IOException
      *             On error reading from the stream
@@ -314,7 +314,7 @@ public class DigestUtils {
      * Calculates the MD5 digest and returns the value as a 32 character hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return MD5 digest as a hex string
      */
     public static String md5Hex(final String data) {
@@ -325,7 +325,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest
      * @deprecated Use {@link #sha1(byte[])}
      */
@@ -338,7 +338,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest
      * @throws IOException
      *             On error reading from the stream
@@ -354,7 +354,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest
      * @deprecated Use {@link #sha1(String)}
      */
@@ -367,7 +367,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest
      * @since 1.7
      */
@@ -379,7 +379,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest
      * @throws IOException
      *             On error reading from the stream
@@ -393,7 +393,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a <code>byte[]</code>.
      *
      * @param data
-     *            Data to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
+     *            TriggerListViewItemHandler to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
      * @return SHA-1 digest
      */
     public static byte[] sha1(final String data) {
@@ -404,7 +404,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest as a hex string
      * @since 1.7
      */
@@ -416,7 +416,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest as a hex string
      * @throws IOException
      *             On error reading from the stream
@@ -430,7 +430,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest as a hex string
      * @since 1.7
      */
@@ -445,7 +445,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-256 digest
      * @since 1.4
      */
@@ -460,7 +460,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-256 digest
      * @throws IOException
      *             On error reading from the stream
@@ -477,7 +477,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
+     *            TriggerListViewItemHandler to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
      * @return SHA-256 digest
      * @since 1.4
      */
@@ -492,7 +492,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-256 digest as a hex string
      * @since 1.4
      */
@@ -507,7 +507,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-256 digest as a hex string
      * @throws IOException
      *             On error reading from the stream
@@ -524,7 +524,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-256 digest as a hex string
      * @since 1.4
      */
@@ -539,7 +539,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-384 digest
      * @since 1.4
      */
@@ -554,7 +554,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-384 digest
      * @throws IOException
      *             On error reading from the stream
@@ -571,7 +571,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
+     *            TriggerListViewItemHandler to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
      * @return SHA-384 digest
      * @since 1.4
      */
@@ -586,7 +586,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-384 digest as a hex string
      * @since 1.4
      */
@@ -601,7 +601,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-384 digest as a hex string
      * @throws IOException
      *             On error reading from the stream
@@ -618,7 +618,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-384 digest as a hex string
      * @since 1.4
      */
@@ -633,7 +633,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-512 digest
      * @since 1.4
      */
@@ -648,7 +648,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-512 digest
      * @throws IOException
      *             On error reading from the stream
@@ -665,7 +665,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
+     *            TriggerListViewItemHandler to digest; converted to bytes using {@link StringUtils#getBytesUtf8(String)}
      * @return SHA-512 digest
      * @since 1.4
      */
@@ -680,7 +680,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-512 digest as a hex string
      * @since 1.4
      */
@@ -695,7 +695,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-512 digest as a hex string
      * @throws IOException
      *             On error reading from the stream
@@ -712,7 +712,7 @@ public class DigestUtils {
      * </p>
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-512 digest as a hex string
      * @since 1.4
      */
@@ -724,7 +724,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest as a hex string
      * @deprecated Use {@link #sha1Hex(byte[])}
      */
@@ -737,7 +737,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest as a hex string
      * @throws IOException
      *             On error reading from the stream
@@ -753,7 +753,7 @@ public class DigestUtils {
      * Calculates the SHA-1 digest and returns the value as a hex string.
      *
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return SHA-1 digest as a hex string
      * @deprecated Use {@link #sha1Hex(String)}
      */
@@ -783,7 +783,7 @@ public class DigestUtils {
      * @param digest
      *            The MessageDigest to use (e.g. MD5)
      * @param data
-     *            Data to digest
+     *            TriggerListViewItemHandler to digest
      * @return the digest
      * @throws IOException
      *             On error reading from the stream

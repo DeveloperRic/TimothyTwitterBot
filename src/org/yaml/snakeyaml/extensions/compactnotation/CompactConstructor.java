@@ -15,24 +15,16 @@
  */
 package org.yaml.snakeyaml.extensions.compactnotation;
 
-import java.beans.IntrospectionException;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.yaml.snakeyaml.constructor.Construct;
 import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.Property;
-import org.yaml.snakeyaml.nodes.MappingNode;
-import org.yaml.snakeyaml.nodes.Node;
-import org.yaml.snakeyaml.nodes.NodeTuple;
-import org.yaml.snakeyaml.nodes.ScalarNode;
-import org.yaml.snakeyaml.nodes.SequenceNode;
+import org.yaml.snakeyaml.nodes.*;
+
+import java.beans.IntrospectionException;
+import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Construct a custom Java instance out of a compact object notation format.
@@ -71,7 +63,7 @@ public class CompactConstructor extends Constructor {
 
     protected void setProperties(Object bean, Map<String, Object> data) throws Exception {
         if (data == null) {
-            throw new NullPointerException("Data for Compact Object Notation cannot be null.");
+            throw new NullPointerException("TriggerListViewItemHandler for Compact Object Notation cannot be null.");
         }
         for (Map.Entry<String, Object> entry : data.entrySet()) {
             String key = entry.getKey();

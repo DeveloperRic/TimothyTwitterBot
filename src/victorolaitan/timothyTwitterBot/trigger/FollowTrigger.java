@@ -1,6 +1,7 @@
 package victorolaitan.timothyTwitterBot.trigger;
 
 import victorolaitan.timothyTwitterBot.Main;
+import victorolaitan.timothyTwitterBot.response.ResponseDataType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +20,7 @@ public class FollowTrigger extends Trigger {
     }
 
     @Override
-    public void onUpdateCycle() {
+    boolean onUpdateCycle() {
         if (Main.twitter.getSelf().getFollowersCount() > followers.size()) {
             List<Long> newList = Main.twitter.users().getFollowerIDs().stream().map(Number::longValue).collect(Collectors.toList());
             newList.stream().filter(id -> !followers.contains(id)).forEach(this::deliver);
@@ -29,7 +30,14 @@ public class FollowTrigger extends Trigger {
             }
             followers.clear();
             followers.addAll(newList);
+            return true;
         }
+        return false;
+    }
+
+    @Override
+    ResponseDataType suppliedDataType() {
+        return ResponseDataType.USER_ID;
     }
 
 }

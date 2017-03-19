@@ -1,5 +1,6 @@
 package victorolaitan.timothyTwitterBot.util;
 
+import com.sun.istack.internal.Nullable;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -13,26 +14,28 @@ import java.util.ArrayList;
 /**
  * EasyJSON is a class created to help simplify the JSON process.
  * No need to create new Objects for each item you want to add.
- * Simply user foo.put(key, value) or foo.putArray(key, values).
+ * Simply use: foo.putGeneric(value) or foo.putGeneric(key, value) or foo.putArray(key, values...) or foo.putStructure("key").
  * You can also add items inline. For example:
  * <p>
- * EasyJSON json = EasyJSON.create();
+ * EasyJSON json = EasyJSON.create("EasyJSON Example");
  * <p>
- * json.put("pets", EasyJSON.JSONElementType.STRUCTURE).putArray("dogs").put("pug", EasyJSON.JSONElementType.PRIMITIVE);
+ * json.putStructure("pets").putArray("dogs").putGeneric("pug");
  * <p>
- * json.search("pets", "dogs").put("rottweiler", EasyJSON.JSONElementType.PRIMITIVE);
+ * json.search("pets", "dogs").putGeneric("rottweiler");
  * <p>
- * json.search("pets").put("cats", "i'm not a cat guy", EasyJSON.JSONElementType.PRIMITIVE);
+ * json.search("pets").putArray("cats", "i'm not a cat guy");
  * <p>
  * will result in a structure like this:
  * <p>
+ * "EasyJSON Example":{
+ * <p>
  * "pets":{
  * <p>
- *  "cats":"i'm not a cat guy",
+ * "cats":["i'm not a cat guy"],
  * <p>
- *  "dogs":["pug",
+ * "dogs":["pug", "rottweiler"]
  * <p>
- *  "rottweiler"]
+ * }
  * <p>
  * }
  * <p>
@@ -54,7 +57,7 @@ public class EasyJSON {
      * @param filePath The path of the file relative to the Java instance (or full path ie. c: .... )
      * @return The parsed EasyJSON structure
      * @throws IOException    if the file cannot be read.
-     * @throws ParseException if the file's JSON structure if incompatible with EasyJSON.
+     * @throws ParseException if the file's JSON structure is incompatible with EasyJSON.
      */
     public static EasyJSON open(String filePath) throws IOException, ParseException {
         return new EasyJSON(filePath);
@@ -169,7 +172,7 @@ public class EasyJSON {
         }
     }
 
-    public enum JSONElementType {
+    private enum JSONElementType {
         PRIMITIVE,
         ARRAY,
         STRUCTURE,
@@ -177,11 +180,11 @@ public class EasyJSON {
     }
 
     public class JSONElement {
-        JSONElementType type;
-        ArrayList<JSONElement> children = new ArrayList<>();
-        String key;
-        Object value;
-        JSONElement parent;
+        public JSONElementType type;
+        public ArrayList<JSONElement> children = new ArrayList<>();
+        public String key;
+        public Object value;
+        public JSONElement parent;
 
         JSONElement(JSONElement parent, JSONElementType type, String key, Object value) {
             this.parent = parent;
@@ -190,27 +193,40 @@ public class EasyJSON {
             this.value = value;
         }
 
-        public JSONElement putGeneric(Object item, JSONElementType type) {
-            switch (this.type) {
-                case ARRAY:
-                    return put(null, item, type);
-                default:
-                    return put((String) item, null, type);
+        public JSONElement putGeneric(String key, Object value) {
+            JSONElement element;
+            if (value instanceof EasyJSON) {
+                element = ((EasyJSON) value).root;
+            } else if (value instanceof JSONElement) {
+                element = (JSONElement) value;
+            } else {
+                element = new JSONElement(this, JSONElementType.PRIMITIVE, key, value);
             }
+            children.add(element);
+            return element;
         }
 
-        public JSONElement put(String key, Object value, JSONElementType type) {
-            JSONElement element = null;
-            if (key != null) {
-                if (value instanceof EasyJSON) {
-                    element = ((EasyJSON) value).root;
-                } else if (value instanceof JSONElement) {
-                    element = (JSONElement) value;
-                } else {
-                    element = new JSONElement(this, type, key, value);
-                }
+        public JSONElement putGeneric(Object value) {
+            JSONElement element;
+            if (value instanceof EasyJSON) {
+                element = ((EasyJSON) value).root;
+            } else if (value instanceof JSONElement) {
+                element = (JSONElement) value;
             } else {
-                element = new JSONElement(this, type, String.valueOf(children.size()), value);
+                element = new JSONElement(this, JSONElementType.PRIMITIVE, null, value);
+            }
+            children.add(element);
+            return element;
+        }
+
+        public JSONElement putStructure(@Nullable String key) {
+            JSONElement element;
+            if (value instanceof EasyJSON) {
+                element = ((EasyJSON) value).root;
+            } else if (value instanceof JSONElement) {
+                element = (JSONElement) value;
+            } else {
+                element = new JSONElement(this, JSONElementType.STRUCTURE, key, null);
             }
             children.add(element);
             return element;
@@ -230,14 +246,26 @@ public class EasyJSON {
             children.add(element);
             return element;
         }
+
+        public JSONElement search(String... location) {
+            return deepSearch(this, location, 0);
+        }
+
+        public <T> T valueOf(String... location) {
+            return (T) search(location).value;
+        }
     }
 
-    public JSONElement putGeneric(String key, JSONElementType type) {
-        return root.putGeneric(key, type);
+    public JSONElement putGeneric(String key, Object value) {
+        return root.putGeneric(key, value);
     }
 
-    public JSONElement put(String key, Object value, JSONElementType type) {
-        return root.put(key, value, type);
+    public JSONElement putGeneric(Object value) {
+        return root.putGeneric(value);
+    }
+
+    public JSONElement putStructure(@Nullable String key) {
+        return root.putStructure(key);
     }
 
     public JSONElement putArray(String key, Object... items) {
@@ -246,6 +274,10 @@ public class EasyJSON {
 
     public JSONElement search(String... location) {
         return deepSearch(root, location, 0);
+    }
+
+    public <T> T valueOf(String... location) {
+        return (T) search(location).value;
     }
 
     private JSONElement deepSearch(JSONElement element, String[] location, int locPosition) {
@@ -263,7 +295,7 @@ public class EasyJSON {
     }
 
     public JSONObject exportToJSONOject() throws ParseException {
-        return (JSONObject) deepSave(new JSONObject(), root);
+        return deepSave(new JSONObject(), root);
     }
 
     public void save() throws ParseException {
@@ -272,7 +304,7 @@ public class EasyJSON {
         }
         checkExists(filePath);
         JSONObject obj = new JSONObject();
-        obj = (JSONObject) deepSave(obj, root);
+        obj = deepSave(obj, root);
         try (FileWriter file = new FileWriter(filePath)) {
             file.write(obj.toJSONString());
             file.flush();
@@ -296,7 +328,7 @@ public class EasyJSON {
     public void save(String altPath) throws ParseException {
         JSONObject obj = new JSONObject();
         checkExists(altPath);
-        obj = (JSONObject) deepSave(obj, root);
+        obj = deepSave(obj, root);
         try (FileWriter file = new FileWriter(altPath)) {
             file.write(obj.toJSONString());
             file.flush();
@@ -306,7 +338,7 @@ public class EasyJSON {
     }
 
     //FIXME fix deepsave recursive return operation
-    private Object deepSave(Object currentJSONRef, JSONElement currentElement) throws ParseException {
+    private <T> T deepSave(T currentJSONRef, JSONElement currentElement) throws ParseException {
         for (JSONElement child : currentElement.children) {
             Object objectToAdd;
             switch (child.type) {
@@ -316,6 +348,9 @@ public class EasyJSON {
                 case STRUCTURE:
                     objectToAdd = deepSave(new JSONObject(), child);
                     break;
+                case ROOT:
+                    objectToAdd = deepSave(new JSONObject(), child);
+                    break;
                 default:
                     objectToAdd = child.value;
             }
@@ -323,16 +358,16 @@ public class EasyJSON {
                 if (currentJSONRef instanceof JSONObject) {
                     JSONObject object = (JSONObject) currentJSONRef;
                     object.put(child.key, objectToAdd);
-                    currentJSONRef = object;
+                    currentJSONRef = (T) object;
                 } else if (currentJSONRef instanceof JSONArray) {
                     JSONArray array = (JSONArray) currentJSONRef;
                     array.add(objectToAdd);
-                    currentJSONRef = array;
+                    currentJSONRef = (T) array;
                 } else {
-                    throw new ParseException(ParseException.UNEXPECTED_TOKEN, "Error while saving EasyJSON instance! : Incompatible structure.");
+                    throw new ParseException(ParseException.UNEXPECTED_TOKEN, "Error while saving EasyJSON instance! : Incompatible element design.");
                 }
             } else {
-                objectToAdd = 1;
+                throw new ParseException(ParseException.UNEXPECTED_TOKEN, "Error while saving EasyJSON instance! : Incompatible element design.");
             }
         }
         return currentJSONRef;

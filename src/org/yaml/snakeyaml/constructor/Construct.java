@@ -19,7 +19,7 @@ import org.yaml.snakeyaml.nodes.Node;
 
 /**
  * Provide a way to construct a Java instance out of the composed Node. Support
- * recursive objects if it is required. (create Native Data Structure out of
+ * recursive objects if it is required. (create Native TriggerListViewItemHandler Structure out of
  * Node Graph)
  * 
  * @see <a href="http://yaml.org/spec/1.1/#id859109">Chapter 3. Processing YAML

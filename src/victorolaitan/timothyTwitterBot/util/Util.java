@@ -1,16 +1,24 @@
 package victorolaitan.timothyTwitterBot.util;
 
+import javafx.embed.swing.SwingFXUtils;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import victorolaitan.timothyTwitterBot.Main;
+import victorolaitan.timothyTwitterBot.response.ResponseDataType;
 
+import javax.imageio.ImageIO;
 import java.io.*;
+import java.math.BigInteger;
+import java.net.URL;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by RictAcius on 05/03/2017.
@@ -47,10 +55,8 @@ public class Util {
     }
 
     public static void writeToTextFile(String path, boolean append, String... linesAry) {
-        ArrayList<String> lines = new ArrayList<String>();
-        for (String line : linesAry) {
-            lines.add(line);
-        }
+        ArrayList<String> lines = new ArrayList<>();
+        Collections.addAll(lines, linesAry);
         Path file = Paths.get(path + ".txt");
         try {
             if (!append) {
@@ -96,6 +102,41 @@ public class Util {
             }
         }
         return lines;
+    }
+
+    public static Object convertDataTypes(Object data, ResponseDataType supplied, ResponseDataType required) {
+        if (supplied == required) {
+            return data;
+        }
+        if (supplied == ResponseDataType.STATUS_ID && required == ResponseDataType.USER_ID) {
+            return Main.twitter.getStatus((BigInteger) data).getUser().getId();
+        } else if (supplied == ResponseDataType.MESSAGE_ID && required == ResponseDataType.USER_ID) {
+            return Main.twitter.getDirectMessage((BigInteger) data).getSender().getId();
+        } else {
+            return null;
+        }
+    }
+
+    public static Image downloadImage(URL url) throws IOException {
+        return SwingFXUtils.toFXImage(ImageIO.read(url), null);
+    }
+
+    public static Image loadClassImage(String name) {
+        try {
+            return SwingFXUtils.toFXImage(ImageIO.read(ClassLoader.getSystemResource("victorolaitan/timothyTwitterBot/res/image/" + name)), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return downloadErrorImage();
+    }
+
+    public static Image downloadErrorImage() {
+        try {
+            return SwingFXUtils.toFXImage(ImageIO.read(ClassLoader.getSystemResource("victorolaitan/timothyTwitterBot/res/image/image-download-error.png")), null);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 }

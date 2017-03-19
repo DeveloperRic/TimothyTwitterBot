@@ -18,7 +18,7 @@ package org.yaml.snakeyaml.representer;
 import org.yaml.snakeyaml.nodes.Node;
 
 /**
- * Create a Node Graph out of the provided Native Data Structure (Java
+ * Create a Node Graph out of the provided Native TriggerListViewItemHandler Structure (Java
  * instance).
  * 
  * @see <a href="http://yaml.org/spec/1.1/#id859109">Chapter 3. Processing YAML

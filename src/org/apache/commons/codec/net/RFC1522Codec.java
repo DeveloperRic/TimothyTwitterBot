@@ -17,12 +17,12 @@
 
 package org.apache.commons.codec.net;
 
-import java.io.UnsupportedEncodingException;
-import java.nio.charset.Charset;
-
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.EncoderException;
 import org.apache.commons.codec.binary.StringUtils;
+
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
 
 /**
  * Implements methods common to all codecs defined in RFC 1522.
@@ -54,7 +54,7 @@ abstract class RFC1522Codec {
      * Applies an RFC 1522 compliant encoding scheme to the given string of text with the given charset.
      * <p>
      * This method constructs the "encoded-word" header common to all the RFC 1522 codecs and then invokes
-     * {@link #doEncoding(byte [])} method of a concrete class to perform the specific encoding.
+     * doEncoding(byte []) method of a concrete class to perform the specific encoding.
      *
      * @param text
      *            a string to encode
@@ -85,7 +85,7 @@ abstract class RFC1522Codec {
      * Applies an RFC 1522 compliant encoding scheme to the given string of text with the given charset.
      * <p>
      * This method constructs the "encoded-word" header common to all the RFC 1522 codecs and then invokes
-     * {@link #doEncoding(byte [])} method of a concrete class to perform the specific encoding.
+     * doEncoding(byte []) method of a concrete class to perform the specific encoding.
      *
      * @param text
      *            a string to encode
@@ -111,7 +111,7 @@ abstract class RFC1522Codec {
      * Applies an RFC 1522 compliant decoding scheme to the given string of text.
      * <p>
      * This method processes the "encoded-word" header common to all the RFC 1522 codecs and then invokes
-     * {@link #doEncoding(byte [])} method of a concrete class to perform the specific decoding.
+     * doEncoding(byte []) method of a concrete class to perform the specific decoding.
      *
      * @param text
      *            a string to decode
@@ -166,7 +166,7 @@ abstract class RFC1522Codec {
      * Encodes an array of bytes using the defined encoding scheme.
      *
      * @param bytes
-     *            Data to be encoded
+     *            TriggerListViewItemHandler to be encoded
      * @return A byte array containing the encoded data
      * @throws EncoderException
      *             thrown if the Encoder encounters a failure condition during the encoding process.
@@ -177,7 +177,7 @@ abstract class RFC1522Codec {
      * Decodes an array of bytes using the defined encoding scheme.
      *
      * @param bytes
-     *            Data to be decoded
+     *            TriggerListViewItemHandler to be decoded
      * @return a byte array that contains decoded data
      * @throws DecoderException
      *             A decoder exception is thrown if a Decoder encounters a failure condition during the decode process.

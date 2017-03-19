@@ -22,14 +22,13 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         instance = this;
+        currentStage = primaryStage;
         ArrayList<String> acs = Util.bufferTextFile("acs");
         if (acs.isEmpty()) {
             Util.switchScene(primaryStage, "timothy");
         } else {
             initTimothy(acs, primaryStage);
         }
-        currentStage = primaryStage;
-        primaryStage.show();
     }
 
     public static void initTimothy(ArrayList<String> acs, Stage stage) {
@@ -38,13 +37,16 @@ public class Main extends Application {
                     acs.get(0), acs.get(1));
             username = acs.get(2);
             twitter = new Twitter(username, client);
-            DashboardController controller = Util.switchScene(stage, "dashboard");
-            controller.init();
-            Trigger.init();
         } catch (Exception e) {
             e.printStackTrace();
             Util.switchScene(stage, "no-internet");
+            currentStage.show();
+            return;
         }
+        DashboardController controller = Util.switchScene(stage, "dashboard");
+        currentStage.show();
+        controller.init();
+        Trigger.init();
     }
 
     @Override

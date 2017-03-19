@@ -5,10 +5,14 @@ import victorolaitan.timothyTwitterBot.util.EasyJSON;
 /**
  * Initial commit by Victor Olaitan on 16/03/2017.
  */
-public abstract class Response {
+public interface Response {
 
-    public abstract EasyJSON exportResponse();
+    ResponseDataType requiredDataType();
 
-    public abstract void run(Object... args);
+    void create(EasyJSON.JSONElement data);
+
+    EasyJSON exportResponse();
+
+    void run(Object data);
 
 }

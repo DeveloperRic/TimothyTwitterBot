@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
@@ -12,13 +12,13 @@
     </columnConstraints>
     <rowConstraints>
         <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="137.0" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="74.0" minHeight="10.0" prefHeight="55.0" vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="118.0" minHeight="10.0" prefHeight="118.0" vgrow="SOMETIMES" />
         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
         <Label alignment="CENTER" text="What can I do for you?" textAlignment="CENTER" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="TOP">
             <font>
-                <Font size="28.0" />
+                <Font size="20.0" />
             </font>
             <padding>
                 <Insets left="140.0" top="40.0" />
@@ -26,7 +26,10 @@
         </Label>
         <Button fx:id="Dash_btnResponses" alignment="CENTER" mnemonicParsing="false" onAction="#onDashManageResponsesClick" text="Manage Automated Responses" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
         <Button fx:id="Dash_btnScheduledTweets" alignment="CENTER" layoutX="81.0" layoutY="185.0" mnemonicParsing="false" onAction="#onScheduledTweetsClick" text="Manage Scheduled Tweets" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-        <ListView fx:id="Dash_lstTimeline" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.rowSpan="2" />
+        <ListView fx:id="Dash_lstTimeline" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowSpan="3">
+         <GridPane.margin>
+            <Insets top="30.0" />
+         </GridPane.margin></ListView>
         <ImageView fx:id="Dash_picUserImage" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" GridPane.rowSpan="2" GridPane.valignment="TOP">
             <GridPane.margin>
                 <Insets left="20.0" top="20.0" />
@@ -34,7 +37,7 @@
         </ImageView>
         <Label fx:id="Dash_lblUsername" alignment="CENTER" layoutX="169.0" layoutY="69.0" text="&lt;Username&gt;" textAlignment="CENTER" GridPane.columnSpan="2" GridPane.halignment="LEFT" GridPane.valignment="TOP">
             <font>
-                <Font size="20.0" />
+                <Font size="15.0" />
             </font>
             <GridPane.margin>
                 <Insets />
@@ -43,5 +46,13 @@
                 <Insets left="140.0" top="20.0" />
             </padding>
         </Label>
+      <Label text="Timeline" underline="true" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.valignment="TOP">
+         <font>
+            <Font size="16.0" />
+         </font>
+         <padding>
+            <Insets top="5.0" />
+         </padding>
+      </Label>
     </children>
 </GridPane>

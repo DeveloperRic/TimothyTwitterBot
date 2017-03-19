@@ -1,8 +1,12 @@
 package victorolaitan.timothyTwitterBot.trigger;
 
 import victorolaitan.timothyTwitterBot.response.Response;
+import victorolaitan.timothyTwitterBot.response.ResponseDataType;
 import victorolaitan.timothyTwitterBot.util.EasyJSON;
+import victorolaitan.timothyTwitterBot.util.Util;
 
+import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,7 +22,7 @@ public abstract class Trigger {
         private int size;
         private long waitTime;
         private boolean running;
-        private static int currentPosition = 0;
+        private int currentPosition;
 
         TriggerCycle() {
             thread = new Thread(this);
@@ -31,41 +35,27 @@ public abstract class Trigger {
             for (int i = currentPosition; i < size; i++, currentPosition++) {
                 Trigger trigger = triggers.get(i);
                 if (trigger.active) {
-                    trigger.onUpdateCycle();
+                    boolean complete = trigger.onUpdateCycle();
+                    if (complete) {
+                        try {
+                            Thread.sleep(waitTime);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }
                 }
                 if (!running) {
                     return;
                 }
-                try {
-                    Thread.sleep(waitTime);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
-            if (currentPosition > 0 && currentPosition < triggers.size()) {
-                for (int i = 0; i <= currentPosition; i++) {
-                    Trigger trigger = triggers.get(i);
-                    if (trigger.active) {
-                        trigger.onUpdateCycle();
-                    }
-                    if (!running) {
-                        return;
-                    }
-                    try {
-                        Thread.sleep(waitTime);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            currentPosition = 0;
         }
 
         void notifySizeUpdate() {
             running = false;
             size = triggers.size();
             if (size > 0) {
-                double triggerRatio = size / TWITTER_MAX_QUERIES_PER_MIN;
-                waitTime = (long) triggerRatio * (60000 / TWITTER_MAX_QUERIES_PER_MIN);
+                waitTime = (size / TWITTER_MAX_QUERIES_PER_MIN) * (60000 / TWITTER_MAX_QUERIES_PER_MIN);
                 run();
             } else {
                 currentPosition = 0;
@@ -74,14 +64,25 @@ public abstract class Trigger {
     }
 
     private static boolean initialised;
-    private static ArrayList<Trigger> triggers = new ArrayList<>();
+    public static ArrayList<Trigger> triggers = new ArrayList<>();
     private static TriggerCycle triggerCycle;
 
     public static void init() {
-        if (!initialised) {
-            triggerCycle = new TriggerCycle();
-            initialised = true;
+        if (initialised) return;
+        triggerCycle = new TriggerCycle();
+        try {
+            EasyJSON triggers = EasyJSON.open("triggers.txt");
+            for (EasyJSON.JSONElement triggerData : triggers.search("triggers").children) {
+                Class<?> triggerClass = Class.forName(triggerData.valueOf("class"));
+                Constructor<?> triggerConstructor = triggerClass.getConstructor();
+                Trigger triggerInstance = (Trigger) triggerConstructor.newInstance();
+                triggerInstance.create(triggerData);
+                triggerInstance.active = true;
+            }
+        } catch (IOException | EasyJSON.ParseException | ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+            e.printStackTrace();
         }
+        initialised = true;
     }
 
 
@@ -91,7 +92,7 @@ public abstract class Trigger {
         EasyJSON json = EasyJSON.create();
         json.putArray("triggers");
         for (Trigger trigger : triggers) {
-            json.search("triggers").putGeneric(trigger.exportTrigger(), EasyJSON.JSONElementType.STRUCTURE);
+            json.search("triggers").putGeneric(trigger.exportTrigger());
         }
         try {
             json.save("triggers.txt");
@@ -125,7 +126,7 @@ public abstract class Trigger {
     }
 
 
-    private ArrayList<Response> responses = new ArrayList<>();
+    public ArrayList<Response> responses = new ArrayList<>();
     private boolean active;
 
     Trigger(Response... responses) {
@@ -134,21 +135,39 @@ public abstract class Trigger {
         this.responses.addAll(Arrays.stream(responses).collect(Collectors.toList()));
     }
 
-    public EasyJSON exportTrigger() {
+    private void create(EasyJSON.JSONElement data) throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        active = data.valueOf("active");
+        for (EasyJSON.JSONElement responseData : data.search("responses").children) {
+            Class<?> responseClass = Class.forName(responseData.valueOf("class"));
+            Constructor<?> responseConstructor = responseClass.getConstructor();
+            Response responseInstance = (Response) responseConstructor.newInstance();
+            responseInstance.create(responseData);
+            responses.add(responseInstance);
+        }
+    }
+
+    private EasyJSON exportTrigger() {
         EasyJSON json = EasyJSON.create();
-        json.put("class", "FollowTrigger", EasyJSON.JSONElementType.PRIMITIVE);
-        json.put("active", active, EasyJSON.JSONElementType.PRIMITIVE);
+        json.putGeneric("class", this.getClass().getName());
+        json.putGeneric("active", active);
         json.putArray("responses");
         for (Response response : responses) {
-            json.search("responses").putGeneric(response.exportResponse(), EasyJSON.JSONElementType.STRUCTURE);
+            json.search("responses").putGeneric(response.exportResponse());
         }
         return json;
     }
 
-    public abstract void onUpdateCycle();
+    abstract boolean onUpdateCycle();
 
-    public void deliver(Object... args) {
-        responses.forEach(response -> response.run(args));
+    abstract ResponseDataType suppliedDataType();
+
+    void deliver(Object data) {
+        for (Response response : responses) {
+            Object converted = Util.convertDataTypes(data, suppliedDataType(), response.requiredDataType());
+            if (converted != null) {
+                response.run(response);
+            }
+        }
     }
 
     public void addResponses(Response... responses) {

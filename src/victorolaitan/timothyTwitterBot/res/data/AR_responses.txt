@@ -1,4 +1,4 @@
-Send tweet
+New tweet
 Follow back
 Un-follow the person
 Reply tweet

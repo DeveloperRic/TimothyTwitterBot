@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.geometry.Rectangle2D?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<GridPane fx:id="gridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <columnConstraints>
+      <ColumnConstraints hgrow="SOMETIMES" minWidth="34.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints minHeight="34.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+    </rowConstraints>
+   <children>
+      <Label fx:id="creatorName" text="Name" GridPane.columnIndex="1">
+         <font>
+            <Font name="System Bold" size="15.0" />
+         </font>
+      </Label>
+      <ImageView fx:id="creatorImage" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+         <GridPane.margin>
+            <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
+         </GridPane.margin>
+         <viewport>
+            <Rectangle2D height="30.0" width="30.0" />
+         </viewport>
+      </ImageView>
+      <Label fx:id="tweetText" text="Tweet" wrapText="true" GridPane.columnSpan="3" GridPane.rowIndex="1">
+         <font>
+            <Font size="13.0" />
+         </font>
+      </Label>
+      <Label fx:id="tweetDate" text="Date" GridPane.halignment="LEFT" GridPane.rowIndex="2">
+         <font>
+            <Font name="System Italic" size="10.0" />
+         </font>
+      </Label>
+      <Label fx:id="creatorUsername" text="\@Username" GridPane.columnIndex="2" />
+   </children>
+   <padding>
+      <Insets bottom="5.0" left="2.0" right="2.0" top="5.0" />
+   </padding>
+</GridPane>

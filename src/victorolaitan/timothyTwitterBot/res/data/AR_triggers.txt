@@ -1,8 +1,7 @@
 Someone follows me
 Someone un-follows me
-Someone tweets me
+Someone mentions me
 Someone sends me a direct message
 Someone likes my tweet
 Someone re-tweets my tweet
 Someone quotes my tweet
-Someone mentions me
