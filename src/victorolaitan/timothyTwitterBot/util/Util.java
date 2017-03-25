@@ -117,6 +117,21 @@ public class Util {
         }
     }
 
+    public static boolean checkDataTypesCompatible(ResponseDataType supplied, ResponseDataType required) {
+        if (supplied == null) {
+            return false;
+        } else if (required == null) {
+            return true;
+        } else if (supplied == required) {
+            return true;
+        } else if (supplied == ResponseDataType.STATUS_ID && required == ResponseDataType.USER_ID) {
+            return true;
+        } else if (supplied == ResponseDataType.MESSAGE_ID && required == ResponseDataType.USER_ID) {
+            return true;
+        }
+        return false;
+    }
+
     public static Image downloadImage(URL url) throws IOException {
         return SwingFXUtils.toFXImage(ImageIO.read(url), null);
     }

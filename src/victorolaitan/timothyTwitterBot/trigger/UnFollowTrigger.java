@@ -35,7 +35,7 @@ public class UnFollowTrigger extends Trigger {
     }
 
     @Override
-    ResponseDataType suppliedDataType() {
+    public ResponseDataType suppliedDataType() {
         return ResponseDataType.USER_ID;
     }
 }

@@ -5,10 +5,10 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
-<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="victorolaitan.timothyTwitterBot.controller.DashboardController">
+<GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/8.0.76-ea" xmlns:fx="http://javafx.com/fxml/1" fx:controller="victorolaitan.timothyTwitterBot.controller.DashboardController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="408.0" minWidth="10.0" prefWidth="384.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="337.0" minWidth="10.0" prefWidth="316.0" />
     </columnConstraints>
     <rowConstraints>
         <RowConstraints maxHeight="137.0" minHeight="10.0" prefHeight="137.0" vgrow="SOMETIMES" />
@@ -26,7 +26,7 @@
         </Label>
         <Button fx:id="Dash_btnResponses" alignment="CENTER" mnemonicParsing="false" onAction="#onDashManageResponsesClick" text="Manage Automated Responses" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER" />
         <Button fx:id="Dash_btnScheduledTweets" alignment="CENTER" layoutX="81.0" layoutY="185.0" mnemonicParsing="false" onAction="#onScheduledTweetsClick" text="Manage Scheduled Tweets" textAlignment="CENTER" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER" />
-        <ListView fx:id="Dash_lstTimeline" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowSpan="3">
+        <ListView fx:id="Dash_lstTimeline" prefHeight="370.0" prefWidth="363.0" GridPane.columnIndex="1" GridPane.rowSpan="3">
          <GridPane.margin>
             <Insets top="30.0" />
          </GridPane.margin></ListView>

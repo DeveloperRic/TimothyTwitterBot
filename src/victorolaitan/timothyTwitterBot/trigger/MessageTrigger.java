@@ -29,7 +29,7 @@ public class MessageTrigger extends Trigger {
     }
 
     @Override
-    ResponseDataType suppliedDataType() {
+    public ResponseDataType suppliedDataType() {
         return ResponseDataType.MESSAGE_ID;
     }
 }

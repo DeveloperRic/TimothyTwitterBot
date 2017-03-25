@@ -30,7 +30,7 @@ public class MentionTrigger extends Trigger {
     }
 
     @Override
-    ResponseDataType suppliedDataType() {
+    public ResponseDataType suppliedDataType() {
         return ResponseDataType.STATUS_ID;
     }
 }

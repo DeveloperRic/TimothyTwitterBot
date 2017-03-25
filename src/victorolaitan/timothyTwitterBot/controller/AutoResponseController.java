@@ -4,12 +4,10 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import victorolaitan.timothyTwitterBot.Main;
-import victorolaitan.timothyTwitterBot.response.BroadcastTweetResponse;
-import victorolaitan.timothyTwitterBot.response.FollowResponse;
-import victorolaitan.timothyTwitterBot.response.ReplyTweetResponse;
-import victorolaitan.timothyTwitterBot.response.UnFollowResponse;
+import victorolaitan.timothyTwitterBot.response.*;
 import victorolaitan.timothyTwitterBot.trigger.*;
 import victorolaitan.timothyTwitterBot.util.Util;
 
@@ -37,6 +35,8 @@ public class AutoResponseController {
                 return new ListViewCell();
             }
         });
+        lblEditTrigger.setText("");
+        lblEditResponse.setText("");
     }
 
     public class ListViewCell extends ListCell<Trigger> {
@@ -47,7 +47,9 @@ public class AutoResponseController {
                 TriggerListViewItemHandler triggerListViewItemHandler = new TriggerListViewItemHandler();
                 triggerListViewItemHandler.setInfo(trigger);
                 triggerListViewItemHandler.getGridPane().setPrefWidth(autoResponsesList.getPrefWidth());
-                setGraphic(triggerListViewItemHandler.getGridPane());
+                GridPane gridPane = triggerListViewItemHandler.getGridPane();
+                gridPane.setPrefWidth(autoResponsesList.getPrefWidth());
+                setGraphic(gridPane);
             }
         }
     }
@@ -100,28 +102,114 @@ public class AutoResponseController {
                 new Alert(Alert.AlertType.WARNING, "The selected trigger is not yet available!").showAndWait();
                 return;
         }
+        Response response;
         switch (comboAddSend.getSelectionModel().getSelectedItem().toString()) {
             case "New tweet":
-                BroadcastTweetResponse broadcastTweetResponse = new BroadcastTweetResponse();
+                BroadcastTweetResponse broadcastTweetResponse = new BroadcastTweetResponse(trigger);
                 broadcastTweetResponse.message = txtAddArgs.getText();
-                trigger.addResponses(broadcastTweetResponse);
+                response = broadcastTweetResponse;
                 break;
             case "Follow back":
-                trigger.addResponses(new FollowResponse());
+                response = new FollowResponse(trigger);
                 break;
             case "Un-follow the person":
-                trigger.addResponses(new UnFollowResponse());
+                response = new UnFollowResponse(trigger);
                 break;
             case "Reply tweet":
-                ReplyTweetResponse replyTweetResponse = new ReplyTweetResponse();
+                ReplyTweetResponse replyTweetResponse = new ReplyTweetResponse(trigger);
                 replyTweetResponse.message = txtAddArgs.getText();
-                trigger.addResponses(replyTweetResponse);
+                response = replyTweetResponse;
+                break;
+            case "Reply direct message":
+                ReplyMessageResponse replyMessageResponse = new ReplyMessageResponse(trigger);
+                replyMessageResponse.message = txtAddArgs.getText();
+                response = replyMessageResponse;
                 break;
             default:
                 new Alert(Alert.AlertType.WARNING, "The selected response has not been implemented yet!").showAndWait();
                 return;
         }
+        if (!Util.checkDataTypesCompatible(trigger.suppliedDataType(), response.requiredDataType())) {
+            new Alert(Alert.AlertType.WARNING, "The selected trigger and response are not compatible!").showAndWait();
+            return;
+        }
+        if (trigger.duplicateResponse(response)) {
+            new Alert(Alert.AlertType.WARNING, "Automated response has already been added!").showAndWait();
+            return;
+        }
+        trigger.addResponses(response);
         trigger.activate();
+        refreshList();
         new Alert(Alert.AlertType.INFORMATION, trigger.getClass().getSimpleName() + "\n" + trigger.responses.get(0).getClass().getSimpleName() + "\n" + txtAddArgs.getText()).showAndWait();
+    }
+
+    @FXML
+    public void autoResponsesListClick() {
+        selectedResponse = null;
+        lblEditTrigger.setText("");
+        lblEditResponse.setText("");
+        txtEditArgs.setText("");
+    }
+
+    static Response selectedResponse;
+
+    @FXML
+    public void btnArRemoveClick() {
+        Object selectedItem = autoResponsesList.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            Trigger selectedTrigger = (Trigger) observableList.get(autoResponsesList.getSelectionModel().getSelectedIndex());
+            Trigger.triggers.remove(selectedTrigger);
+            autoResponsesList.getSelectionModel().clearSelection();
+            refreshList();
+        } else {
+            if (selectedResponse != null) {
+                selectedResponse.getTrigger().responses.remove(selectedResponse);
+                refreshList();
+            }
+        }
+    }
+
+    @FXML
+    Label lblEditTrigger;
+    @FXML
+    Label lblEditResponse;
+    @FXML
+    TextField txtEditArgs;
+
+    @FXML
+    public void btnArEditClick() {
+        if (selectedResponse != null) {
+            Object savedData = selectedResponse.getSavedData();
+            if (savedData == null) {
+                new Alert(Alert.AlertType.INFORMATION, "The response has no saved data that can be modified!").showAndWait();
+            } else {
+                lblEditTrigger.setText(selectedResponse.getTrigger().getClass().getSimpleName());
+                lblEditResponse.setText(selectedResponse.getClass().getSimpleName());
+                txtEditArgs.setText(String.valueOf(savedData));
+                editingResponse = selectedResponse;
+            }
+        }
+    }
+
+    private void refreshList() {
+        observableList.clear();
+        observableList.setAll(Trigger.triggers);
+    }
+
+    Response editingResponse;
+
+    @FXML
+    public void onEditResponseClick() {
+        if (editingResponse != null) {
+            if (!editingResponse.getTrigger().responses.contains(editingResponse)) {
+                new Alert(Alert.AlertType.ERROR, "The response has since been removed from its trigger!").showAndWait();
+            } else {
+                editingResponse.updateSavedData(txtEditArgs.getText());
+                lblEditTrigger.setText("");
+                lblEditResponse.setText("");
+                txtEditArgs.setText("");
+                editingResponse = null;
+            }
+        }
     }
 }

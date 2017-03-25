@@ -116,7 +116,7 @@ public abstract class Trigger {
         return null;
     }
 
-    public static <T extends Trigger> T locateTrigger(Class<T> triggerClass) {
+    public static <T extends Trigger> T locateTrigger(Class<? extends Trigger> triggerClass) {
         for (Trigger trigger : triggers) {
             if (trigger.getClass().equals(triggerClass)) {
                 return (T) trigger;
@@ -139,8 +139,8 @@ public abstract class Trigger {
         active = data.valueOf("active");
         for (EasyJSON.JSONElement responseData : data.search("responses").children) {
             Class<?> responseClass = Class.forName(responseData.valueOf("class"));
-            Constructor<?> responseConstructor = responseClass.getConstructor();
-            Response responseInstance = (Response) responseConstructor.newInstance();
+            Constructor<?> responseConstructor = responseClass.getConstructor(Trigger.class);
+            Response responseInstance = (Response) responseConstructor.newInstance(this);
             responseInstance.create(responseData);
             responses.add(responseInstance);
         }
@@ -159,7 +159,7 @@ public abstract class Trigger {
 
     abstract boolean onUpdateCycle();
 
-    abstract ResponseDataType suppliedDataType();
+    public abstract ResponseDataType suppliedDataType();
 
     void deliver(Object data) {
         for (Response response : responses) {
@@ -184,6 +184,25 @@ public abstract class Trigger {
 
     public boolean isActive() {
         return active;
+    }
+
+    public boolean duplicateResponse(Response response) {
+        if (response.getSavedData() == null) {
+            for (Response r : responses) {
+                if (r.getClass().equals(response)) {
+                    return true;
+                }
+            }
+        } else {
+            for (Response r : responses) {
+                if (r.getClass().equals(response.getClass())) {
+                    if (r.getSavedData().equals(response.getSavedData())) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
 }

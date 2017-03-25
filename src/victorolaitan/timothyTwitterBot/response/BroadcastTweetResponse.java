@@ -1,6 +1,7 @@
 package victorolaitan.timothyTwitterBot.response;
 
 import victorolaitan.timothyTwitterBot.Main;
+import victorolaitan.timothyTwitterBot.trigger.Trigger;
 import victorolaitan.timothyTwitterBot.util.EasyJSON;
 
 /**
@@ -8,6 +9,16 @@ import victorolaitan.timothyTwitterBot.util.EasyJSON;
  */
 public class BroadcastTweetResponse implements Response {
     public String message;
+    private Trigger trigger;
+
+    public BroadcastTweetResponse(Trigger trigger) {
+        this.trigger = trigger;
+    }
+
+    @Override
+    public Trigger getTrigger() {
+        return trigger;
+    }
 
     @Override
     public ResponseDataType requiredDataType() {
@@ -30,5 +41,15 @@ public class BroadcastTweetResponse implements Response {
     @Override
     public void run(Object data) {
         Main.twitter.updateStatus(message);
+    }
+
+    @Override
+    public Object getSavedData() {
+        return message;
+    }
+
+    @Override
+    public void updateSavedData(Object newData) {
+        message = newData.toString();
     }
 }

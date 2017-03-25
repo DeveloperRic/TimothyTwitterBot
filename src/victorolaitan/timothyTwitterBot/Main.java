@@ -23,6 +23,7 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         instance = this;
         currentStage = primaryStage;
+        Util.switchScene(primaryStage, "loading");
         ArrayList<String> acs = Util.bufferTextFile("acs");
         if (acs.isEmpty()) {
             Util.switchScene(primaryStage, "timothy");
