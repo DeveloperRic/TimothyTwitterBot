@@ -26,11 +26,17 @@ import java.util.Collections;
 public class Util {
 
     public static void init() {
-        File folder = new File("TimothyTwitterBotFiles");
-        folder.mkdirs();
+        File acs = new File("acs.txt");
+        if (!acs.exists()) {
+            try {
+                acs.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    public static ArrayList<String> bufferClassTextFile(String name) {
+    public static ArrayList<String> readClassTextFile(String name) {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = null;
         try {
@@ -80,7 +86,7 @@ public class Util {
         return null;
     }
 
-    public static ArrayList<String> bufferTextFile(String name) {
+    public static ArrayList<String> readTextFile(String name) {
         ArrayList<String> lines = new ArrayList<>();
         BufferedReader reader = null;
         try {

@@ -96,7 +96,7 @@ public class EasyJSON {
         }
     }
 
-    JSONElement root;
+    public JSONElement root;
     String filePath;
 
     private EasyJSON() {

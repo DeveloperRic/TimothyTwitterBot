@@ -11,6 +11,6 @@ public class NoInternetController {
 
     @FXML
     public void onRetryClick() {
-        Main.initTimothy(Util.bufferTextFile("acs"), Main.currentStage);
+        Main.initTimothy(Util.readTextFile("acs"), Main.currentStage);
     }
 }

@@ -7,13 +7,12 @@ import victorolaitan.timothyTwitterBot.util.EasyJSON;
 import java.math.BigInteger;
 
 /**
- * Initial commit by Victor Olaitan on 21/03/2017.
+ * Initial commit by Victor Olaitan on 26/03/2017.
  */
-public class ReplyMessageResponse implements Response {
-    String message;
+public class LikeTweetResponse implements Response {
     Trigger trigger;
 
-    public ReplyMessageResponse(Trigger trigger) {
+    public LikeTweetResponse(Trigger trigger) {
         this.trigger = trigger;
     }
 
@@ -24,34 +23,31 @@ public class ReplyMessageResponse implements Response {
 
     @Override
     public ResponseDataType requiredDataType() {
-        return ResponseDataType.MESSAGE_ID;
+        return ResponseDataType.STATUS_ID;
     }
 
     @Override
     public void create(EasyJSON.JSONElement data) {
-        message = data.valueOf("message");
     }
 
     @Override
     public EasyJSON exportResponse() {
         EasyJSON json = EasyJSON.create();
-        json.putGeneric("class", ReplyMessageResponse.class.getName());
-        json.putGeneric("message", message);
+        json.putGeneric("class", this.getClass().getName());
         return json;
     }
 
     @Override
     public void run(Object data) {
-        Main.twitter.sendMessage(Main.twitter.getDirectMessage((BigInteger) data).getSender().getScreenName(),message);
+        Main.twitter.setFavorite(Main.twitter.getStatus((BigInteger) data), true);
     }
 
     @Override
     public Object getSavedData() {
-        return message;
+        return null;
     }
 
     @Override
     public void updateSavedData(Object newData) {
-        message = newData.toString();
     }
 }

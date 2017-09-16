@@ -11,6 +11,8 @@ import victorolaitan.timothyTwitterBot.response.*;
 import victorolaitan.timothyTwitterBot.trigger.*;
 import victorolaitan.timothyTwitterBot.util.Util;
 
+import java.util.Optional;
+
 public class AutoResponseController {
     @FXML
     ChoiceBox comboAddWhen;
@@ -25,8 +27,8 @@ public class AutoResponseController {
 
     public void init() {
         comboAddWhen.getItems().clear();
-        comboAddWhen.getItems().addAll(Util.bufferClassTextFile("AR_triggers"));
-        comboAddSend.getItems().addAll(Util.bufferClassTextFile("AR_responses"));
+        comboAddWhen.getItems().addAll(Util.readClassTextFile("AR_triggers"));
+        comboAddSend.getItems().addAll(Util.readClassTextFile("AR_responses"));
         observableList.setAll(Trigger.triggers);
         autoResponsesList.setItems(observableList);
         autoResponsesList.setCellFactory(new Callback<ListView<Trigger>, ListCell<Trigger>>() {
@@ -50,6 +52,8 @@ public class AutoResponseController {
                 GridPane gridPane = triggerListViewItemHandler.getGridPane();
                 gridPane.setPrefWidth(autoResponsesList.getPrefWidth());
                 setGraphic(gridPane);
+            } else {
+                setGraphic(null);
             }
         }
     }
@@ -92,12 +96,6 @@ public class AutoResponseController {
                     trigger = new MessageTrigger();
                 }
                 break;
-            case "Someone likes my tweet":
-                break;
-            case "Someone re-tweets my tweet":
-                break;
-            case "Someone quotes my tweet":
-                break;
             default:
                 new Alert(Alert.AlertType.WARNING, "The selected trigger is not yet available!").showAndWait();
                 return;
@@ -105,9 +103,10 @@ public class AutoResponseController {
         Response response;
         switch (comboAddSend.getSelectionModel().getSelectedItem().toString()) {
             case "New tweet":
-                BroadcastTweetResponse broadcastTweetResponse = new BroadcastTweetResponse(trigger);
-                broadcastTweetResponse.message = txtAddArgs.getText();
-                response = broadcastTweetResponse;
+                response = new BroadcastTweetResponse(trigger);
+                break;
+            case "Message the person":
+                response = new NewMessageResponse(trigger);
                 break;
             case "Follow back":
                 response = new FollowResponse(trigger);
@@ -116,14 +115,19 @@ public class AutoResponseController {
                 response = new UnFollowResponse(trigger);
                 break;
             case "Reply tweet":
-                ReplyTweetResponse replyTweetResponse = new ReplyTweetResponse(trigger);
-                replyTweetResponse.message = txtAddArgs.getText();
-                response = replyTweetResponse;
+                response = new ReplyTweetResponse(trigger);
                 break;
             case "Reply direct message":
-                ReplyMessageResponse replyMessageResponse = new ReplyMessageResponse(trigger);
-                replyMessageResponse.message = txtAddArgs.getText();
-                response = replyMessageResponse;
+                response = new ReplyMessageResponse(trigger);
+                break;
+            case "Like tweet/quote":
+                response = new LikeTweetResponse(trigger);
+                break;
+            case "Re-tweet tweet/quote":
+                response = new RetweetTweetResponse(trigger);
+                break;
+            case "Quote tweet/quote":
+                response = new QuoteTweetResponse(trigger);
                 break;
             default:
                 new Alert(Alert.AlertType.WARNING, "The selected response has not been implemented yet!").showAndWait();
@@ -137,10 +141,11 @@ public class AutoResponseController {
             new Alert(Alert.AlertType.WARNING, "Automated response has already been added!").showAndWait();
             return;
         }
+        response.updateSavedData(txtAddArgs.getText());
         trigger.addResponses(response);
         trigger.activate();
         refreshList();
-        new Alert(Alert.AlertType.INFORMATION, trigger.getClass().getSimpleName() + "\n" + trigger.responses.get(0).getClass().getSimpleName() + "\n" + txtAddArgs.getText()).showAndWait();
+        new Alert(Alert.AlertType.INFORMATION, trigger.getClass().getSimpleName() + "\n" + trigger.responses.get(0).getClass().getSimpleName() + "\n" + response.getSavedData()).showAndWait();
     }
 
     @FXML
@@ -158,12 +163,24 @@ public class AutoResponseController {
         Object selectedItem = autoResponsesList.getSelectionModel().getSelectedItem();
         if (selectedItem != null) {
             Trigger selectedTrigger = (Trigger) observableList.get(autoResponsesList.getSelectionModel().getSelectedIndex());
+            for (Response response : selectedTrigger.responses) {
+                if (response.getSavedData() != null) {
+                    Optional<ButtonType> result = new Alert(Alert.AlertType.WARNING, "This trigger contains responses with saved data!"
+                            + "\n" + "Are you sure you want to remove it?", ButtonType.YES, ButtonType.NO).showAndWait();
+                    if (result.isPresent() && result.get() == ButtonType.NO) {
+                        return;
+                    } else {
+                        break;
+                    }
+                }
+            }
             Trigger.triggers.remove(selectedTrigger);
             autoResponsesList.getSelectionModel().clearSelection();
             refreshList();
         } else {
             if (selectedResponse != null) {
                 selectedResponse.getTrigger().responses.remove(selectedResponse);
+                selectedResponse = null;
                 refreshList();
             }
         }
@@ -196,6 +213,13 @@ public class AutoResponseController {
         observableList.setAll(Trigger.triggers);
     }
 
+    private void resetEditArea() {
+        lblEditTrigger.setText("");
+        lblEditResponse.setText("");
+        txtEditArgs.setText("");
+        editingResponse = null;
+    }
+
     Response editingResponse;
 
     @FXML
@@ -205,10 +229,7 @@ public class AutoResponseController {
                 new Alert(Alert.AlertType.ERROR, "The response has since been removed from its trigger!").showAndWait();
             } else {
                 editingResponse.updateSavedData(txtEditArgs.getText());
-                lblEditTrigger.setText("");
-                lblEditResponse.setText("");
-                txtEditArgs.setText("");
-                editingResponse = null;
+                resetEditArea();
             }
         }
     }

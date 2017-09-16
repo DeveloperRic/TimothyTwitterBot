@@ -23,8 +23,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
         instance = this;
         currentStage = primaryStage;
+        Util.init();
         Util.switchScene(primaryStage, "loading");
-        ArrayList<String> acs = Util.bufferTextFile("acs");
+        primaryStage.show();
+        ArrayList<String> acs = Util.readTextFile("acs");
         if (acs.isEmpty()) {
             Util.switchScene(primaryStage, "timothy");
         } else {
@@ -46,13 +48,15 @@ public class Main extends Application {
         }
         DashboardController controller = Util.switchScene(stage, "dashboard");
         currentStage.show();
-        controller.init();
         Trigger.init();
+        Settings.init();
+        controller.init();
     }
 
     @Override
     public void stop() {
         Trigger.saveTriggers();
+        Settings.save();
     }
 
     public static void main(String[] args) {

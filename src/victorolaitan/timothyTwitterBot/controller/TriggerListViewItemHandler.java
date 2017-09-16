@@ -7,7 +7,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
-import victorolaitan.timothyTwitterBot.response.Response;
 import victorolaitan.timothyTwitterBot.trigger.Trigger;
 
 import java.io.IOException;
@@ -24,7 +23,7 @@ public class TriggerListViewItemHandler {
     @FXML
     private GridPane gridPane;
 
-    private ObservableList observableList = FXCollections.observableArrayList();
+    ObservableList observableList = FXCollections.observableArrayList();
 
     public TriggerListViewItemHandler() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("victorolaitan/timothyTwitterBot/res/scene/trigger-listview-item.fxml"));
@@ -36,7 +35,7 @@ public class TriggerListViewItemHandler {
         }
     }
 
-    private Trigger trigger;
+    Trigger trigger;
 
     public void setInfo(Trigger trigger) {
         this.trigger = trigger;
@@ -53,7 +52,7 @@ public class TriggerListViewItemHandler {
     public void responseListClick() {
         Object selectedResponse = triggerResponses.getSelectionModel().getSelectedItem();
         if (selectedResponse != null) {
-            AutoResponseController.selectedResponse = (Response) observableList.get(triggerResponses.getSelectionModel().getSelectedIndex());
+            AutoResponseController.selectedResponse = trigger.responses.get(triggerResponses.getSelectionModel().getSelectedIndex());
         }
     }
 }

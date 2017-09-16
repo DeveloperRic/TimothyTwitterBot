@@ -10,8 +10,8 @@ import java.math.BigInteger;
  * Initial commit by Victor Olaitan on 19/03/2017.
  */
 public class ReplyTweetResponse implements Response {
-    public String message;
-    private Trigger trigger;
+    String message;
+    Trigger trigger;
 
     public ReplyTweetResponse(Trigger trigger) {
         this.trigger = trigger;

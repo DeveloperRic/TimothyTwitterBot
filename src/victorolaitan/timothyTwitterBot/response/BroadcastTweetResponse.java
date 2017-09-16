@@ -8,8 +8,8 @@ import victorolaitan.timothyTwitterBot.util.EasyJSON;
  * Initial commit by Victor Olaitan on 16/03/2017.
  */
 public class BroadcastTweetResponse implements Response {
-    public String message;
-    private Trigger trigger;
+    String message;
+    Trigger trigger;
 
     public BroadcastTweetResponse(Trigger trigger) {
         this.trigger = trigger;
